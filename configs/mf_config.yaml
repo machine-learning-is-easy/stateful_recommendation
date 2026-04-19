@@ -1,0 +1,21 @@
+dataset:
+  category: beauty         # amazon category or "ml-1m" for synthetic
+  data_dir: data/raw
+  min_interactions: 5
+  max_seq_len: 50
+
+model:
+  emb_dim: 64
+  dropout: 0.1
+
+training:
+  batch_size: 1024
+  lr: 0.001
+  weight_decay: 0.00001
+  n_epochs: 50
+  patience: 10
+  monitor: HR@10
+  k_list: [5, 10, 20]
+  n_neg_candidates: 100
+  log_dir: runs/mf
+  checkpoint_path: checkpoints/mf_best.pt

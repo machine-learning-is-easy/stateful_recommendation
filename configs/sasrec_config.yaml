@@ -1,0 +1,24 @@
+dataset:
+  category: beauty
+  data_dir: data/raw
+  min_interactions: 5
+  max_seq_len: 50
+
+model:
+  emb_dim: 64
+  n_blocks: 2
+  n_heads: 2
+  dropout: 0.2
+
+training:
+  batch_size: 256
+  lr: 0.001
+  weight_decay: 0.00001
+  warmup_steps: 100
+  n_epochs: 50
+  patience: 10
+  monitor: HR@10
+  k_list: [5, 10, 20]
+  n_neg_candidates: 100
+  log_dir: runs/sasrec
+  checkpoint_path: checkpoints/sasrec_best.pt

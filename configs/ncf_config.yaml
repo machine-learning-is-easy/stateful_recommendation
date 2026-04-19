@@ -1,0 +1,22 @@
+dataset:
+  category: beauty
+  data_dir: data/raw
+  min_interactions: 5
+  max_seq_len: 50
+
+model:
+  emb_dim: 64
+  mlp_layers: [256, 128, 64]
+  dropout: 0.2
+
+training:
+  batch_size: 512
+  lr: 0.001
+  weight_decay: 0.00001
+  n_epochs: 50
+  patience: 10
+  monitor: HR@10
+  k_list: [5, 10, 20]
+  n_neg_candidates: 100
+  log_dir: runs/ncf
+  checkpoint_path: checkpoints/ncf_best.pt

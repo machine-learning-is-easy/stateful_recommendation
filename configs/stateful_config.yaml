@@ -1,0 +1,30 @@
+dataset:
+  category: beauty
+  data_dir: data/raw
+  min_interactions: 5
+  max_seq_len: 50
+
+model:
+  base_model_type: mf   # one of: mf | ncf | sasrec
+  emb_dim: 64
+  hidden_dim: 128        # GRU hidden size in UserStateEncoder
+  gru_layers: 2
+  dropout: 0.2
+  # ncf-specific (only used when base_model_type: ncf)
+  mlp_layers: [256, 128, 64]
+  # sasrec-specific (only used when base_model_type: sasrec)
+  n_blocks: 2
+  n_heads: 2
+
+training:
+  batch_size: 256
+  lr: 0.0005
+  weight_decay: 0.00001
+  warmup_steps: 200
+  n_epochs: 50
+  patience: 10
+  monitor: HR@10
+  k_list: [5, 10, 20]
+  n_neg_candidates: 100
+  log_dir: runs/stateful
+  checkpoint_path: checkpoints/stateful_best.pt
