@@ -48,9 +48,10 @@ def evaluate_ranking(
             user_items = set(user_sequences.get(user, []))
             # sample negatives
             neg_pool = list(set(range(1, n_items)) - user_items - {target_item})
-            if len(neg_pool) < n_neg_candidates:
+            n_neg_to_use = min(n_neg_candidates, len(neg_pool))
+            if n_neg_to_use == 0:
                 continue
-            negs = rng.choice(neg_pool, n_neg_candidates, replace=False).tolist()
+            negs = rng.choice(neg_pool, n_neg_to_use, replace=False).tolist()
             candidates = [target_item] + negs  # target always at index 0
 
             seq_pad = history[-max_seq_len:]

@@ -7,12 +7,16 @@ from pathlib import Path
 from tqdm import tqdm
 
 
+_BASE = "https://mcauleylab.ucsd.edu/public_datasets/data/amazon_v2/categoryFiles"
+
 AMAZON_DATASETS = {
-    "beauty":   "https://datarepo.eng.ucsd.edu/mcauley_group/data/amazon_v2/categoryFiles/All_Beauty.json.gz",
-    "sports":   "https://datarepo.eng.ucsd.edu/mcauley_group/data/amazon_v2/categoryFiles/Sports_and_Outdoors.json.gz",
-    "toys":     "https://datarepo.eng.ucsd.edu/mcauley_group/data/amazon_v2/categoryFiles/Toys_and_Games.json.gz",
-    "movies":   "https://datarepo.eng.ucsd.edu/mcauley_group/data/amazon_v2/categoryFiles/Movies_and_TV.json.gz",
-    "ml-1m":    None,  # fallback synthetic
+    "beauty":      f"{_BASE}/All_Beauty.json.gz",
+    "sports":      f"{_BASE}/Sports_and_Outdoors.json.gz",
+    "toys":        f"{_BASE}/Toys_and_Games.json.gz",
+    "movies":      f"{_BASE}/Movies_and_TV.json.gz",
+    "clothing":    f"{_BASE}/Clothing_Shoes_and_Jewelry.json.gz",
+    "electronics": f"{_BASE}/Electronics.json.gz",
+    "ml-1m":       None,   # synthetic fallback (no download needed)
 }
 
 

@@ -6,8 +6,9 @@ Usage:
     python main.py --model ncf
     python main.py --model sasrec
     python main.py --model stateful --base mf
-    python main.py --model stateful --base ncf
-    python main.py --model stateful --base sasrec
+    python main.py --model stateful --base ncf  --encoder lstm
+    python main.py --model stateful --base sasrec --encoder mamba
+    python main.py --model stateful --base mf   --encoder causal_transformer
 """
 
 import argparse
@@ -27,6 +28,11 @@ def main():
     parser.add_argument("--model", required=True, choices=list(_MODEL_CONFIG))
     parser.add_argument("--base", default="mf", choices=["mf", "ncf", "sasrec"],
                         help="Base model for stateful (ignored for other models)")
+    parser.add_argument(
+        "--encoder", default=None,
+        choices=["gru", "lstm", "mean_pool", "attention_pool", "causal_transformer", "mamba"],
+        help="Encoder type for stateful (ignored for other models)",
+    )
     parser.add_argument("--config", default=None, help="Override config YAML path")
     args = parser.parse_args()
 
@@ -36,7 +42,7 @@ def main():
     module = importlib.import_module(module_name)
 
     if args.model == "stateful":
-        module.main(config_path, base_override=args.base)
+        module.main(config_path, base_override=args.base, encoder_override=args.encoder)
     else:
         module.main(config_path)
 

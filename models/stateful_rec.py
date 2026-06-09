@@ -13,7 +13,7 @@ class StatefulRecommender(nn.Module):
     Pipeline:
         purchase/interaction history
               ↓
-        UserStateEncoder  (GRU over item sequences)
+        UserStateEncoder  (pluggable encoder over item sequences)
               ↓
         user_state_emb  (B, emb_dim)
               ↓
@@ -25,7 +25,8 @@ class StatefulRecommender(nn.Module):
     chosen base model, making the recommendation *dynamic*: the same user
     gets a different representation depending on their current history.
 
-    Supported base models: "mf", "ncf", "sasrec"
+    Supported base models:   "mf", "ncf", "sasrec"
+    Supported encoder types: see UserStateEncoder.SUPPORTED
     """
 
     SUPPORTED = ("mf", "ncf", "sasrec")
@@ -33,27 +34,36 @@ class StatefulRecommender(nn.Module):
     def __init__(
         self,
         base_model_type: str,
-        n_users:     int,
-        n_items:     int,
-        emb_dim:     int   = 64,
-        hidden_dim:  int   = 128,
-        gru_layers:  int   = 2,
-        max_seq_len: int   = 50,
-        dropout:     float = 0.2,
-        **base_kwargs,      # forwarded to the base model constructor
+        n_users:         int,
+        n_items:         int,
+        emb_dim:         int   = 64,
+        hidden_dim:      int   = 128,
+        n_layers:        int   = 2,
+        max_seq_len:     int   = 50,
+        dropout:         float = 0.2,
+        encoder_type:    str   = "gru",
+        bidirectional:   bool  = False,
+        d_state:         int   = 16,
+        enc_n_heads:     int   = 4,
+        **base_kwargs,           # forwarded to the base model constructor
     ):
         super().__init__()
         assert base_model_type in self.SUPPORTED, f"base_model must be one of {self.SUPPORTED}"
         self.base_model_type = base_model_type
 
-        # the encoder produces a (B, emb_dim) state that matches the base model's embedding dim
+        # encoder produces a (B, emb_dim) state that matches the base model's embedding dim
         self.encoder = UserStateEncoder(
             n_items=n_items,
             emb_dim=emb_dim,
             hidden_dim=hidden_dim,
-            n_layers=gru_layers,
+            n_layers=n_layers,
             dropout=dropout,
-            output_dim=emb_dim,   # must match base model emb_dim for injection
+            output_dim=emb_dim,    # must match base model emb_dim for injection
+            encoder_type=encoder_type,
+            bidirectional=bidirectional,
+            max_seq_len=max_seq_len,
+            d_state=d_state,
+            enc_n_heads=enc_n_heads,
         )
 
         # instantiate the chosen base recommender

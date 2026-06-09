@@ -6,15 +6,25 @@ dataset:
 
 model:
   base_model_type: mf   # one of: mf | ncf | sasrec
+
+  # ── encoder ───────────────────────────────────────────────────────────────
+  encoder_type: gru     # gru | lstm | mean_pool | attention_pool | causal_transformer | mamba
   emb_dim: 64
-  hidden_dim: 128        # GRU hidden size in UserStateEncoder
-  gru_layers: 2
+  hidden_dim: 128       # GRU / LSTM hidden size (ignored by pooling / transformer / mamba)
+  n_layers: 2           # GRU / LSTM layers  |  transformer / mamba blocks
   dropout: 0.2
-  # ncf-specific (only used when base_model_type: ncf)
-  mlp_layers: [256, 128, 64]
-  # sasrec-specific (only used when base_model_type: sasrec)
-  n_blocks: 2
-  n_heads: 2
+  bidirectional: false  # GRU / LSTM only
+
+  # causal_transformer encoder
+  enc_n_heads: 4        # attention heads; emb_dim must be divisible by enc_n_heads
+
+  # mamba encoder
+  d_state: 16           # SSM state dimension (typical: 8–32)
+
+  # ── base model (ncf / sasrec specific) ────────────────────────────────────
+  mlp_layers: [256, 128, 64]   # ncf only
+  n_blocks: 2                  # sasrec only
+  n_heads: 2                   # sasrec only
 
 training:
   batch_size: 256

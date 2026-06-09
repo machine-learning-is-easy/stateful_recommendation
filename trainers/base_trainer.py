@@ -1,3 +1,4 @@
+import os
 import torch
 import torch.nn as nn
 from abc import ABC, abstractmethod
@@ -67,4 +68,7 @@ class BaseTrainer(ABC):
 
     def load_best(self):
         path = self.config.get("checkpoint_path", "checkpoints/best.pt")
+        if not os.path.exists(path):
+            print(f"[BaseTrainer] No checkpoint at {path}; using current weights.")
+            return
         self.model.load_state_dict(torch.load(path, map_location=self.device))
